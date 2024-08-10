@@ -49,7 +49,7 @@
         <span class="close-help" id="closeHelpMenu">&times;</span>
         <h2>Help Menu</h2>
         <p>Drag the note down by holding the top of the calendar and dragging it down.
-           To
+           To resize the note, put ur cursor at the bottom right corner of the box.
         </p>
     </div>
     <script src="script.js"></script>
