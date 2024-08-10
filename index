@@ -28,7 +28,10 @@
             <textarea id="noteArea" placeholder="Type your notes here..."></textarea>
         </div>
     </div>
-    <div class="gear" id="gearIcon"><i class="fas fa-cog"></i></div>
+    <div class="gear" id="gearIcon">
+        <span class="help-label">!</span> <!-- Exclamation mark -->
+        <i class="fas fa-cog"></i>
+    </div>      
     <div class="settings-panel" id="settingsPanel">
         <span class="close" id="closePanel">&times;</span>
         <h2>Settings</h2>
@@ -41,6 +44,11 @@
             <button id="wipeDataBtn" class="wipe-button">Wipe All Data</button>
         </label>
     </div>
-    <script src="script.js"></script>t
+    <div class="help-menu" id="helpMenu">
+        <span class="close-help" id="closeHelpMenu">&times;</span>
+        <h2>Help Menu</h2>
+        <p>Drag the note down by holding the top of the calendar and dragging it down.</p>
+    </div>
+    <script src="script.js"></script>
 </body>
 </html>
