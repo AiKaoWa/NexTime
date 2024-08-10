@@ -14,7 +14,7 @@
     </header>
     <div class="container">
         <div class="calendar">
-            <div class="drag-handle"></div> <!-- Drag Handle for Calendar -->
+            <div class="drag-handle"></div>
             <div class="controls">
                 <button id="prev">&lt;</button>
                 <h2 id="monthYear">August 2024</h2>
@@ -23,14 +23,14 @@
             <div class="days" id="calendarDays"></div>
         </div>
         <div class="note-box">
-            <div class="drag-handle"></div> <!-- Existing drag handle -->
-            <h3 id="noteLabel">7 August Note</h3> <!-- Dynamic Date Label -->
+            <div class="drag-handle"></div>
+            <h3 id="noteLabel">7 August Note</h3> <!-- dynamic date dont change -->
             <textarea id="noteArea" placeholder="Type your notes here..."></textarea>
-            <div class="resizer"></div> <!-- Resizer element -->
+            <div class="resizer"></div> 
         </div>             
     </div>
     <div class="gear" id="gearIcon">
-        <span class="help-label">!</span> <!-- Exclamation mark -->
+        <span class="help-label">!</span>
         <i class="fas fa-cog"></i>
     </div>      
     <div class="settings-panel" id="settingsPanel">
@@ -49,7 +49,10 @@
         <span class="close-help" id="closeHelpMenu">&times;</span>
         <h2>Help Menu</h2>
         <p>Drag the note down by holding the top of the calendar and dragging it down.
-           To resize the note, put ur cursor at the bottom right corner of the box.
+            <br>
+           To resize the note, put your cursor at the bottom right corner of the box.
+            </br>
+           Get start by clicking on any date on the calendar.
         </p>
     </div>
     <script src="script.js"></script>
