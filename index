@@ -23,10 +23,11 @@
             <div class="days" id="calendarDays"></div>
         </div>
         <div class="note-box">
-            <div class="drag-handle"></div> <!-- Drag Handle for Note Box -->
+            <div class="drag-handle"></div> <!-- Existing drag handle -->
             <h3 id="noteLabel">7 August Note</h3> <!-- Dynamic Date Label -->
             <textarea id="noteArea" placeholder="Type your notes here..."></textarea>
-        </div>
+            <div class="resizer"></div> <!-- Resizer element -->
+        </div>             
     </div>
     <div class="gear" id="gearIcon">
         <span class="help-label">!</span> <!-- Exclamation mark -->
@@ -47,7 +48,9 @@
     <div class="help-menu" id="helpMenu">
         <span class="close-help" id="closeHelpMenu">&times;</span>
         <h2>Help Menu</h2>
-        <p>Drag the note down by holding the top of the calendar and dragging it down.</p>
+        <p>Drag the note down by holding the top of the calendar and dragging it down.
+           To
+        </p>
     </div>
     <script src="script.js"></script>
 </body>
