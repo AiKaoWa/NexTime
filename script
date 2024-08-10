@@ -4,216 +4,245 @@ document.getElementById('wipeDataBtn').addEventListener('click', () => {
         location.reload(); // Reload the page to reflect changes
     }
 });
-    const calendar = document.querySelector('.calendar');
-    const noteBox = document.querySelector('.note-box');
-    const noteLabel = document.getElementById('noteLabel');
-    const noteArea = document.getElementById('noteArea');
-    const themeToggle = document.getElementById('themeToggle');
+
+const calendar = document.querySelector('.calendar');
+const noteBox = document.querySelector('.note-box');
+const noteLabel = document.getElementById('noteLabel');
+const noteArea = document.getElementById('noteArea');
+const themeToggle = document.getElementById('themeToggle');
+let isDragging = false;
+let offsetX, offsetY;
+
+function disableTextSelection() {
+    document.body.style.userSelect = 'none'; // Disable text selection
+    document.body.style.pointerEvents = 'none'; // Disable mouse events
+}
+
+function enableTextSelection() {
+    document.body.style.userSelect = ''; // Re-enable text selection
+    document.body.style.pointerEvents = ''; // Re-enable mouse events
+}
+
+function addDraggingFunctionality(element) {
     let isDragging = false;
     let offsetX, offsetY;
 
-    function disableTextSelection() {
-        document.body.style.userSelect = 'none'; // Disable text selection
-        document.body.style.pointerEvents = 'none'; // Disable mouse events
-    }
+    const dragHandle = element.querySelector('.drag-handle');
+    if (!dragHandle) return; // Ensure drag handle exists
 
-    function enableTextSelection() {
-        document.body.style.userSelect = ''; // Re-enable text selection
-        document.body.style.pointerEvents = ''; // Re-enable mouse events
-    }
+    dragHandle.addEventListener('mousedown', (e) => {
+        isDragging = true;
+        offsetX = e.clientX - element.getBoundingClientRect().left;
+        offsetY = e.clientY - element.getBoundingClientRect().top;
+        disableTextSelection(); // Disable text selection
+        element.style.position = 'absolute'; // Ensure the element is absolute
+        element.style.zIndex = 1000; // Keep it above other elements
+    });
 
-    function addDraggingFunctionality(element) {
-        let isDragging = false;
-        let offsetX, offsetY;
-
-        const dragHandle = element.querySelector('.drag-handle');
-        if (!dragHandle) return; // Ensure drag handle exists
-
-        dragHandle.addEventListener('mousedown', (e) => {
-            isDragging = true;
-            offsetX = e.clientX - element.getBoundingClientRect().left;
-            offsetY = e.clientY - element.getBoundingClientRect().top;
-            disableTextSelection(); // Disable text selection
-            element.style.position = 'absolute'; // Ensure the element is absolute
-            element.style.zIndex = 1000; // Keep it above other elements
-        });
-
-        window.addEventListener('mousemove', (e) => {
-            if (isDragging) {
-                const x = e.clientX - offsetX;
-                const y = e.clientY - offsetY;
-                element.style.left = `${x}px`;
-                element.style.top = `${y}px`;
-            }
-        });
-
-        window.addEventListener('mouseup', () => {
-            if (isDragging) {
-                isDragging = false;
-                enableTextSelection(); // Re-enable text selection
-                element.style.zIndex = ''; // Reset z-index after dragging
-                saveCalendarState(); // Save state when dragging stops
-            }
-        });
-    }
-
-    addDraggingFunctionality(calendar);
-    addDraggingFunctionality(noteBox);
-
-    const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-    let currentMonth = new Date().getMonth(); // Start with current month
-    let currentYear = new Date().getFullYear(); // Start with current year
-    let selectedDate = localStorage.getItem('selectedDate') || '';
-
-    function loadCalendarState() {
-        const savedMonth = localStorage.getItem('calendarMonth');
-        const savedYear = localStorage.getItem('calendarYear');
-        const savedCalendarPosition = localStorage.getItem('calendarPosition');
-        const savedNotePosition = localStorage.getItem('notePosition');
-        const savedTheme = localStorage.getItem('theme');
-
-        if (savedMonth !== null) currentMonth = parseInt(savedMonth, 10);
-        if (savedYear !== null) currentYear = parseInt(savedYear, 10);
-        if (savedTheme === 'dark') document.body.classList.add('dark-mode');
-        if (savedCalendarPosition) calendar.style.left = savedCalendarPosition.split(',')[0];
-        if (savedCalendarPosition) calendar.style.top = savedCalendarPosition.split(',')[1];
-        if (savedNotePosition) noteBox.style.left = savedNotePosition.split(',')[0];
-        if (savedNotePosition) noteBox.style.top = savedNotePosition.split(',')[1];
-
-        renderCalendar(currentMonth, currentYear);
-        // Set the theme toggle based on saved theme
-        if (savedTheme === 'dark') themeToggle.checked = true;
-        loadNote(); // Load the note for the selected date
-    }
-
-    function saveCalendarState() {
-        localStorage.setItem('calendarMonth', currentMonth);
-        localStorage.setItem('calendarYear', currentYear);
-        localStorage.setItem('calendarPosition', `${calendar.style.left},${calendar.style.top}`);
-        localStorage.setItem('notePosition', `${noteBox.style.left},${noteBox.style.top}`);
-        const isDarkMode = document.body.classList.contains('dark-mode');
-        localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
-    }
-
-    function saveNote() {
-        if (selectedDate) {
-            localStorage.setItem(`note-${selectedDate}`, noteArea.value);
+    window.addEventListener('mousemove', (e) => {
+        if (isDragging) {
+            const x = e.clientX - offsetX;
+            const y = e.clientY - offsetY;
+            element.style.left = `${x}px`;
+            element.style.top = `${y}px`;
         }
-    }
+    });
 
-    function loadNote() {
-        if (selectedDate) {
-            noteArea.value = localStorage.getItem(`note-${selectedDate}`) || '';
+    window.addEventListener('mouseup', () => {
+        if (isDragging) {
+            isDragging = false;
+            enableTextSelection(); // Re-enable text selection
+            element.style.zIndex = ''; // Reset z-index after dragging
+            saveCalendarState(); // Save state when dragging stops
         }
+    });
+}
+
+addDraggingFunctionality(calendar);
+addDraggingFunctionality(noteBox);
+
+const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+let currentMonth = new Date().getMonth(); // Start with current month
+let currentYear = new Date().getFullYear(); // Start with current year
+let selectedDate = localStorage.getItem('selectedDate') || '';
+
+function loadCalendarState() {
+    const savedMonth = localStorage.getItem('calendarMonth');
+    const savedYear = localStorage.getItem('calendarYear');
+    const savedCalendarPosition = localStorage.getItem('calendarPosition');
+    const savedNotePosition = localStorage.getItem('notePosition');
+    const savedTheme = localStorage.getItem('theme');
+
+    if (savedMonth !== null) currentMonth = parseInt(savedMonth, 10);
+    if (savedYear !== null) currentYear = parseInt(savedYear, 10);
+    if (savedTheme === 'dark') document.body.classList.add('dark-mode');
+    if (savedCalendarPosition) calendar.style.left = savedCalendarPosition.split(',')[0];
+    if (savedCalendarPosition) calendar.style.top = savedCalendarPosition.split(',')[1];
+    if (savedNotePosition) noteBox.style.left = savedNotePosition.split(',')[0];
+    if (savedNotePosition) noteBox.style.top = savedNotePosition.split(',')[1];
+
+    renderCalendar(currentMonth, currentYear);
+    // Set the theme toggle based on saved theme
+    if (savedTheme === 'dark') themeToggle.checked = true;
+    loadNote(); // Load the note for the selected date
+}
+
+function saveCalendarState() {
+    localStorage.setItem('calendarMonth', currentMonth);
+    localStorage.setItem('calendarYear', currentYear);
+    localStorage.setItem('calendarPosition', `${calendar.style.left},${calendar.style.top}`);
+    localStorage.setItem('notePosition', `${noteBox.style.left},${noteBox.style.top}`);
+    const isDarkMode = document.body.classList.contains('dark-mode');
+    localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
+}
+
+function saveNote() {
+    if (selectedDate) {
+        localStorage.setItem(`note-${selectedDate}`, noteArea.value);
+    }
+}
+
+function loadNote() {
+    if (selectedDate) {
+        noteArea.value = localStorage.getItem(`note-${selectedDate}`) || '';
+    }
+}
+
+function renderCalendar(month, year) {
+    const firstDay = new Date(year, month, 1).getDay();
+    const lastDate = new Date(year, month + 1, 0).getDate();
+    const daysContainer = document.getElementById('calendarDays');
+    const monthYear = document.getElementById('monthYear');
+
+    daysContainer.innerHTML = '';
+
+    const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    daysOfWeek.forEach((day, index) => {
+        const div = document.createElement('div');
+        div.className = `day day-header ${day.toLowerCase()}`;
+        div.textContent = day;
+        daysContainer.appendChild(div);
+    });
+
+    for (let i = 0; i < firstDay; i++) {
+        daysContainer.appendChild(document.createElement('div'));
     }
 
-    function renderCalendar(month, year) {
-        const firstDay = new Date(year, month, 1).getDay();
-        const lastDate = new Date(year, month + 1, 0).getDate();
-        const daysContainer = document.getElementById('calendarDays');
-        const monthYear = document.getElementById('monthYear');
+    for (let i = 1; i <= lastDate; i++) {
+        const div = document.createElement('div');
+        div.className = 'day';
+        div.textContent = i;
 
-        daysContainer.innerHTML = '';
+        div.addEventListener('click', () => {
+            const dateLabel = `${i} ${monthNames[month]} Note`;
+            noteLabel.textContent = dateLabel;
+            noteArea.value = ''; // Clear the note area
 
-        const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-        daysOfWeek.forEach((day, index) => {
-            const div = document.createElement('div');
-            div.className = `day day-header ${day.toLowerCase()}`;
-            div.textContent = day;
-            daysContainer.appendChild(div);
+            // Remove 'active-date' class from all days
+            document.querySelectorAll('.day').forEach(day => day.classList.remove('active-date'));
+
+            // Add 'active-date' class to clicked day
+            div.classList.add('active-date');
+
+            // Save the selected date to localStorage
+            selectedDate = `${i}-${month}-${year}`;
+            localStorage.setItem('selectedDate', selectedDate);
+            loadNote(); // Load the note for the selected date
         });
-
-        for (let i = 0; i < firstDay; i++) {
-            daysContainer.appendChild(document.createElement('div'));
-        }
-
-        for (let i = 1; i <= lastDate; i++) {
-            const div = document.createElement('div');
-            div.className = 'day';
-            div.textContent = i;
-
-            div.addEventListener('click', () => {
-                const dateLabel = `${i} ${monthNames[month]} Note`;
-                noteLabel.textContent = dateLabel;
-                noteArea.value = ''; // Clear the note area
-
-                // Remove 'active-date' class from all days
-                document.querySelectorAll('.day').forEach(day => day.classList.remove('active-date'));
-
-                // Add 'active-date' class to clicked day
-                div.classList.add('active-date');
-
-                // Save the selected date to localStorage
-                selectedDate = `${i}-${month}-${year}`;
-                localStorage.setItem('selectedDate', selectedDate);
-                loadNote(); // Load the note for the selected date
-            });
-            
-            // Check if this day is the selected date
-            if (`${i}-${month}-${year}` === selectedDate) {
-                div.classList.add('active-date');
-            }
-            if (i === new Date().getDate() && month === new Date().getMonth() && year === new Date().getFullYear()) {
-                div.classList.add('current-date'); // Highlight today's date
-            }
-            daysContainer.appendChild(div);
-        }
         
-        monthYear.textContent = `${monthNames[month]} ${year}`;
-        saveCalendarState(); // Save state after rendering
+        // Check if this day is the selected date
+        if (`${i}-${month}-${year}` === selectedDate) {
+            div.classList.add('active-date');
+        }
+        if (i === new Date().getDate() && month === new Date().getMonth() && year === new Date().getFullYear()) {
+            div.classList.add('current-date'); // Highlight today's date
+        }
+        daysContainer.appendChild(div);
     }
+    
+    monthYear.textContent = `${monthNames[month]} ${year}`;
+    saveCalendarState(); // Save state after rendering
+}
 
-    document.getElementById('prev').addEventListener('click', () => {
-        if (currentMonth === 0) {
-            currentMonth = 11;
-            currentYear--;
-        } else {
-            currentMonth--;
+document.getElementById('prev').addEventListener('click', () => {
+    if (currentMonth === 0) {
+        currentMonth = 11;
+        currentYear--;
+    } else {
+        currentMonth--;
+    }
+    renderCalendar(currentMonth, currentYear);
+});
+
+document.getElementById('next').addEventListener('click', () => {
+    if (currentMonth === 11) {
+        currentMonth = 0;
+        currentYear++;
+    } else {
+        currentMonth++;
+    }
+    renderCalendar(currentMonth, currentYear);
+});
+
+document.getElementById('gearIcon').addEventListener('click', () => {
+    document.getElementById('settingsPanel').classList.add('active');
+    document.getElementById('helpMenu').classList.remove('active'); // Ensure Help Menu is hidden
+});
+
+document.getElementById('closePanel').addEventListener('click', () => {
+    document.getElementById('settingsPanel').classList.remove('active');
+});
+
+document.getElementById('themeToggle').addEventListener('change', (event) => {
+    if (event.target.checked) {
+        document.body.classList.add('dark-mode');
+    } else {
+        document.body.classList.remove('dark-mode');
+    }
+    saveCalendarState(); // Save state when theme changes
+});
+
+noteArea.addEventListener('input', () => {
+    saveNote(); // Save note content as it changes
+});
+
+window.addEventListener('beforeunload', saveNote);
+
+document.getElementById('themeToggle').addEventListener('change', (event) => {
+    if (event.target.checked) {
+        document.body.classList.add('dark-mode');
+    } else {
+        document.body.classList.remove('dark-mode');
+    }
+    saveCalendarState(); // Save state when theme changes
+});
+
+// Load state when page loads
+loadCalendarState();
+
+// Help Menu functionality
+document.addEventListener('DOMContentLoaded', () => {
+    const helpMenu = document.getElementById('helpMenu');
+    const closeHelpMenu = document.getElementById('closeHelpMenu');
+    const helpLabel = document.querySelector('.help-label'); // Exclamation mark
+    const gearIcon = document.getElementById('gearIcon');
+
+    // Toggle Help Menu visibility
+    helpLabel.addEventListener('click', (event) => {
+        event.stopPropagation(); // Prevent click event from propagating to document
+        helpMenu.classList.toggle('active');
+        document.getElementById('settingsPanel').classList.remove('active'); // Ensure settings panel is hidden
+    });
+
+    // Close Help Menu
+    closeHelpMenu.addEventListener('click', () => {
+        helpMenu.classList.remove('active');
+    });
+
+    // Close Help Menu when clicking outside
+    document.addEventListener('click', (event) => {
+        if (!helpMenu.contains(event.target) && !gearIcon.contains(event.target) && !helpLabel.contains(event.target)) {
+            helpMenu.classList.remove('active');
         }
-        renderCalendar(currentMonth, currentYear);
     });
-
-    document.getElementById('next').addEventListener('click', () => {
-        if (currentMonth === 11) {
-            currentMonth = 0;
-            currentYear++;
-        } else {
-            currentMonth++;
-        }
-        renderCalendar(currentMonth, currentYear);
-    });
-
-    document.getElementById('gearIcon').addEventListener('click', () => {
-        document.getElementById('settingsPanel').classList.add('active');
-    });
-
-    document.getElementById('closePanel').addEventListener('click', () => {
-        document.getElementById('settingsPanel').classList.remove('active');
-    });
-
-    themeToggle.addEventListener('change', (event) => {
-        if (event.target.checked) {
-            document.body.classList.add('dark-mode');
-        } else {
-            document.body.classList.remove('dark-mode');
-        }
-        saveCalendarState(); // Save state when theme changes
-    });
-
-    noteArea.addEventListener('input', () => {
-        saveNote(); // Save note content as it changes
-    });
-
-    window.addEventListener('beforeunload', saveNote);
- 
-        document.getElementById('themeToggle').addEventListener('change', (event) => {
-            if (event.target.checked) {
-                document.body.classList.add('dark-mode');
-            } else {
-                document.body.classList.remove('dark-mode');
-            }
-            saveCalendarState(); // Save state when theme changes
-        });
-
-        // Load state when page loads
-        loadCalendarState();
+});
