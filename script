@@ -71,20 +71,28 @@ function loadCalendarState() {
     const savedYear = localStorage.getItem('calendarYear');
     const savedCalendarPosition = localStorage.getItem('calendarPosition');
     const savedNotePosition = localStorage.getItem('notePosition');
+    const savedNoteSize = localStorage.getItem('noteSize'); // Load size
     const savedTheme = localStorage.getItem('theme');
 
     if (savedMonth !== null) currentMonth = parseInt(savedMonth, 10);
     if (savedYear !== null) currentYear = parseInt(savedYear, 10);
     if (savedTheme === 'dark') document.body.classList.add('dark-mode');
-    if (savedCalendarPosition) calendar.style.left = savedCalendarPosition.split(',')[0];
-    if (savedCalendarPosition) calendar.style.top = savedCalendarPosition.split(',')[1];
-    if (savedNotePosition) noteBox.style.left = savedNotePosition.split(',')[0];
-    if (savedNotePosition) noteBox.style.top = savedNotePosition.split(',')[1];
+    if (savedCalendarPosition) {
+        calendar.style.left = savedCalendarPosition.split(',')[0];
+        calendar.style.top = savedCalendarPosition.split(',')[1];
+    }
+    if (savedNotePosition) {
+        noteBox.style.left = savedNotePosition.split(',')[0];
+        noteBox.style.top = savedNotePosition.split(',')[1];
+    }
+    if (savedNoteSize) {
+        noteBox.style.width = savedNoteSize.split(',')[0];
+        noteBox.style.height = savedNoteSize.split(',')[1];
+    }
 
     renderCalendar(currentMonth, currentYear);
-    // Set the theme toggle based on saved theme
     if (savedTheme === 'dark') themeToggle.checked = true;
-    loadNote(); // Load the note for the selected date
+    loadNote();
 }
 
 function saveCalendarState() {
@@ -92,6 +100,7 @@ function saveCalendarState() {
     localStorage.setItem('calendarYear', currentYear);
     localStorage.setItem('calendarPosition', `${calendar.style.left},${calendar.style.top}`);
     localStorage.setItem('notePosition', `${noteBox.style.left},${noteBox.style.top}`);
+    localStorage.setItem('noteSize', `${noteBox.style.width},${noteBox.style.height}`); // Save size
     const isDarkMode = document.body.classList.contains('dark-mode');
     localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
 }
@@ -231,21 +240,21 @@ document.addEventListener('DOMContentLoaded', () => {
     helpLabel.addEventListener('click', (event) => {
         event.stopPropagation(); // Prevent click event from propagating to document
         helpMenu.classList.toggle('active');
-        document.getElementById('settingsPanel').classList.remove('active'); // Ensure settings panel is hidden
+        document.getElementById('settingsPanel').classList.remove('active'); // Ensure Settings Panel is hidden
     });
 
-    // Close Help Menu
     closeHelpMenu.addEventListener('click', () => {
         helpMenu.classList.remove('active');
     });
 
-    // Close Help Menu when clicking outside
+    // Close Help Menu when clicking outside of it
     document.addEventListener('click', (event) => {
-        if (!helpMenu.contains(event.target) && !gearIcon.contains(event.target) && !helpLabel.contains(event.target)) {
+        if (!helpMenu.contains(event.target) && !helpLabel.contains(event.target)) {
             helpMenu.classList.remove('active');
         }
     });
 });
+
 
 function addResizingFunctionality(element) {
     const resizer = element.querySelector('.resizer');
@@ -346,3 +355,28 @@ window.addEventListener('load', () => {
     loadNoteBoxState();
     loadCalendarState(); // Ensure calendar state is also loaded
 });
+
+// Add resizer functionality to note box
+function addResizer(element) {
+    const resizer = element.querySelector('.resizer');
+
+    resizer.addEventListener('mousedown', (e) => {
+        document.addEventListener('mousemove', resize);
+        document.addEventListener('mouseup', stopResize);
+        
+        function resize(e) {
+            const newWidth = e.clientX - element.getBoundingClientRect().left;
+            const newHeight = e.clientY - element.getBoundingClientRect().top;
+            element.style.width = `${newWidth}px`;
+            element.style.height = `${newHeight}px`;
+        }
+        
+        function stopResize() {
+            document.removeEventListener('mousemove', resize);
+            document.removeEventListener('mouseup', stopResize);
+            saveCalendarState(); // Save state after resizing
+        }
+    });
+}
+
+addResizer(noteBox);
