@@ -1,7 +1,7 @@
 document.getElementById('wipeDataBtn').addEventListener('click', () => {
     if (confirm('Are you sure you want to wipe all saved data? This action cannot be undone.')) {
-        localStorage.clear(); // Clear all local storage
-        location.reload(); // Reload the page to reflect changes
+        localStorage.clear(); 
+        location.reload(); 
     }
 });
 
@@ -14,13 +14,13 @@ let isDragging = false;
 let offsetX, offsetY;
 
 function disableTextSelection() {
-    document.body.style.userSelect = 'none'; // Disable text selection
-    document.body.style.pointerEvents = 'none'; // Disable mouse events
+    document.body.style.userSelect = 'none'; 
+    document.body.style.pointerEvents = 'none'; 
 }
 
 function enableTextSelection() {
-    document.body.style.userSelect = ''; // Re-enable text selection
-    document.body.style.pointerEvents = ''; // Re-enable mouse events
+    document.body.style.userSelect = ''; 
+    document.body.style.pointerEvents = ''; 
 }
 
 function addDraggingFunctionality(element) {
@@ -28,15 +28,15 @@ function addDraggingFunctionality(element) {
     let offsetX, offsetY;
 
     const dragHandle = element.querySelector('.drag-handle');
-    if (!dragHandle) return; // Ensure drag handle exists
+    if (!dragHandle) return; 
 
     dragHandle.addEventListener('mousedown', (e) => {
         isDragging = true;
         offsetX = e.clientX - element.getBoundingClientRect().left;
         offsetY = e.clientY - element.getBoundingClientRect().top;
-        disableTextSelection(); // Disable text selection
-        element.style.position = 'absolute'; // Ensure the element is absolute
-        element.style.zIndex = 1000; // Keep it above other elements
+        disableTextSelection(); 
+        element.style.position = 'absolute';
+        element.style.zIndex = 1000; 
     });
 
     window.addEventListener('mousemove', (e) => {
@@ -51,9 +51,9 @@ function addDraggingFunctionality(element) {
     window.addEventListener('mouseup', () => {
         if (isDragging) {
             isDragging = false;
-            enableTextSelection(); // Re-enable text selection
-            element.style.zIndex = ''; // Reset z-index after dragging
-            saveCalendarState(); // Save state when dragging stops
+            enableTextSelection(); 
+            element.style.zIndex = ''; 
+            saveCalendarState(); 
         }
     });
 }
@@ -62,8 +62,8 @@ addDraggingFunctionality(calendar);
 addDraggingFunctionality(noteBox);
 
 const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-let currentMonth = new Date().getMonth(); // Start with current month
-let currentYear = new Date().getFullYear(); // Start with current year
+let currentMonth = new Date().getMonth(); 
+let currentYear = new Date().getFullYear(); 
 let selectedDate = localStorage.getItem('selectedDate') || '';
 
 function loadCalendarState() {
@@ -71,7 +71,7 @@ function loadCalendarState() {
     const savedYear = localStorage.getItem('calendarYear');
     const savedCalendarPosition = localStorage.getItem('calendarPosition');
     const savedNotePosition = localStorage.getItem('notePosition');
-    const savedNoteSize = localStorage.getItem('noteSize'); // Load size
+    const savedNoteSize = localStorage.getItem('noteSize'); 
     const savedTheme = localStorage.getItem('theme');
 
     if (savedMonth !== null) currentMonth = parseInt(savedMonth, 10);
@@ -100,7 +100,7 @@ function saveCalendarState() {
     localStorage.setItem('calendarYear', currentYear);
     localStorage.setItem('calendarPosition', `${calendar.style.left},${calendar.style.top}`);
     localStorage.setItem('notePosition', `${noteBox.style.left},${noteBox.style.top}`);
-    localStorage.setItem('noteSize', `${noteBox.style.width},${noteBox.style.height}`); // Save size
+    localStorage.setItem('noteSize', `${noteBox.style.width},${noteBox.style.height}`);
     const isDarkMode = document.body.classList.contains('dark-mode');
     localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
 }
@@ -145,32 +145,28 @@ function renderCalendar(month, year) {
         div.addEventListener('click', () => {
             const dateLabel = `${i} ${monthNames[month]} Note`;
             noteLabel.textContent = dateLabel;
-            noteArea.value = ''; // Clear the note area
+            noteArea.value = '';
 
-            // Remove 'active-date' class from all days
             document.querySelectorAll('.day').forEach(day => day.classList.remove('active-date'));
 
-            // Add 'active-date' class to clicked day
             div.classList.add('active-date');
 
-            // Save the selected date to localStorage
             selectedDate = `${i}-${month}-${year}`;
             localStorage.setItem('selectedDate', selectedDate);
-            loadNote(); // Load the note for the selected date
+            loadNote();
         });
         
-        // Check if this day is the selected date
         if (`${i}-${month}-${year}` === selectedDate) {
             div.classList.add('active-date');
         }
         if (i === new Date().getDate() && month === new Date().getMonth() && year === new Date().getFullYear()) {
-            div.classList.add('current-date'); // Highlight today's date
+            div.classList.add('current-date'); // highlight today
         }
         daysContainer.appendChild(div);
     }
     
     monthYear.textContent = `${monthNames[month]} ${year}`;
-    saveCalendarState(); // Save state after rendering
+    saveCalendarState(); 
 }
 
 document.getElementById('prev').addEventListener('click', () => {
@@ -195,7 +191,7 @@ document.getElementById('next').addEventListener('click', () => {
 
 document.getElementById('gearIcon').addEventListener('click', () => {
     document.getElementById('settingsPanel').classList.add('active');
-    document.getElementById('helpMenu').classList.remove('active'); // Ensure Help Menu is hidden
+    document.getElementById('helpMenu').classList.remove('active');
 });
 
 document.getElementById('closePanel').addEventListener('click', () => {
@@ -208,11 +204,11 @@ document.getElementById('themeToggle').addEventListener('change', (event) => {
     } else {
         document.body.classList.remove('dark-mode');
     }
-    saveCalendarState(); // Save state when theme changes
+    saveCalendarState(); 
 });
 
 noteArea.addEventListener('input', () => {
-    saveNote(); // Save note content as it changes
+    saveNote(); 
 });
 
 window.addEventListener('beforeunload', saveNote);
@@ -223,31 +219,27 @@ document.getElementById('themeToggle').addEventListener('change', (event) => {
     } else {
         document.body.classList.remove('dark-mode');
     }
-    saveCalendarState(); // Save state when theme changes
+    saveCalendarState();
 });
 
-// Load state when page loads
 loadCalendarState();
 
-// Help Menu functionality
 document.addEventListener('DOMContentLoaded', () => {
     const helpMenu = document.getElementById('helpMenu');
     const closeHelpMenu = document.getElementById('closeHelpMenu');
-    const helpLabel = document.querySelector('.help-label'); // Exclamation mark
+    const helpLabel = document.querySelector('.help-label'); 
     const gearIcon = document.getElementById('gearIcon');
 
-    // Toggle Help Menu visibility
     helpLabel.addEventListener('click', (event) => {
-        event.stopPropagation(); // Prevent click event from propagating to document
+        event.stopPropagation(); 
         helpMenu.classList.toggle('active');
-        document.getElementById('settingsPanel').classList.remove('active'); // Ensure Settings Panel is hidden
+        document.getElementById('settingsPanel').classList.remove('active'); 
     });
 
     closeHelpMenu.addEventListener('click', () => {
         helpMenu.classList.remove('active');
     });
 
-    // Close Help Menu when clicking outside of it
     document.addEventListener('click', (event) => {
         if (!helpMenu.contains(event.target) && !helpLabel.contains(event.target)) {
             helpMenu.classList.remove('active');
@@ -258,7 +250,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function addResizingFunctionality(element) {
     const resizer = element.querySelector('.resizer');
-    if (!resizer) return; // Ensure resizer exists
+    if (!resizer) return;
 
     resizer.addEventListener('mousedown', (e) => {
         e.preventDefault();
@@ -273,19 +265,19 @@ function addResizingFunctionality(element) {
         function onMouseMove(e) {
             const newWidth = startWidth + (e.clientX - startX);
             const newHeight = startHeight + (e.clientY - startY);
-            if (newWidth > 100) { // Minimum width
+            if (newWidth > 100) { 
                 element.style.width = `${newWidth}px`;
             }
-            if (newHeight > 100) { // Minimum height
+            if (newHeight > 100) {
                 element.style.height = `${newHeight}px`;
             }
-            saveCalendarState(); // Save state when resizing
+            saveCalendarState(); 
         }
 
         function onMouseUp() {
             document.removeEventListener('mousemove', onMouseMove);
             document.removeEventListener('mouseup', onMouseUp);
-            saveCalendarState(); // Save state when resizing stops
+            saveCalendarState(); 
         }
     });
 }
@@ -314,7 +306,7 @@ function loadNoteBoxState() {
 
 function addResizingFunctionality(element) {
     const resizer = element.querySelector('.resizer');
-    if (!resizer) return; // Ensure resizer exists
+    if (!resizer) return; 
 
     resizer.addEventListener('mousedown', (e) => {
         e.preventDefault();
@@ -330,7 +322,6 @@ function addResizingFunctionality(element) {
             const newWidth = startWidth + (e.clientX - startX);
             const newHeight = startHeight + (e.clientY - startY);
 
-            // Set a minimum width and height
             if (newWidth > 100) {
                 element.style.width = `${newWidth}px`;
             }
@@ -342,21 +333,18 @@ function addResizingFunctionality(element) {
         function onMouseUp() {
             document.removeEventListener('mousemove', onMouseMove);
             document.removeEventListener('mouseup', onMouseUp);
-            saveNoteBoxState(); // Save state when resizing stops
+            saveNoteBoxState(); 
         }
     });
 }
 
-// Initialize resizing functionality
 addResizingFunctionality(document.querySelector('.note-box'));
 
-// Load state when page loads
 window.addEventListener('load', () => {
     loadNoteBoxState();
-    loadCalendarState(); // Ensure calendar state is also loaded
+    loadCalendarState(); 
 });
 
-// Add resizer functionality to note box
 function addResizer(element) {
     const resizer = element.querySelector('.resizer');
 
@@ -374,7 +362,7 @@ function addResizer(element) {
         function stopResize() {
             document.removeEventListener('mousemove', resize);
             document.removeEventListener('mouseup', stopResize);
-            saveCalendarState(); // Save state after resizing
+            saveCalendarState(); 
         }
     });
 }
