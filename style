@@ -43,7 +43,7 @@ body {
     font-size: 1.3em;
     background-color: #fff;
     transition: background-color 0.3s, border-color 0.3s;
-    position: absolute; /* Position absolute for the note box */
+    position: absolute;
     z-index: 0;
 }
 .dark-mode .calendar {
@@ -110,40 +110,40 @@ body {
     color: #e0e0e0;
 }
 .calendar .day-header.sun {
-    background-color: rgba(255, 0, 0, 0.3); /* Red */
+    background-color: rgba(255, 0, 0, 0.3); /* red */
 }
 .calendar .day-header.mon {
-    background-color: rgba(255, 255, 0, 0.3); /* Yellow */
+    background-color: rgba(255, 255, 0, 0.3); /* yellow */
 }
 .calendar .day-header.tue {
-    background-color: rgba(233, 41, 201, 0.3); /* Pink */
+    background-color: rgba(233, 41, 201, 0.3); /* pink */
 }
 .calendar .day-header.wed {
-    background-color: rgba(0, 128, 0, 0.3); /* Green */
+    background-color: rgba(0, 128, 0, 0.3); /* green */
 }
 .calendar .day-header.thu {
-    background-color: rgba(255, 165, 0, 0.3); /* Orange */
+    background-color: rgba(255, 165, 0, 0.3); /* orange */
 }
 .calendar .day-header.fri {
-    background-color: rgba(7, 124, 192, 0.3); /* Cyan */
+    background-color: rgba(7, 124, 192, 0.3); /* dark cyan */
 }
 .calendar .day-header.sat {
-    background-color: rgba(110, 8, 168, 0.3); /* Purple */
+    background-color: rgba(110, 8, 168, 0.3); /* purple */
 }
 .calendar .day.current-date {
-    color: #0329ff; /* Blue text color for the current date */
+    color: #0329ff; 
     font-weight: bold;
-    border: 2px solid #0329ff; /* Blue border for the current date */
-    border-radius: 4px; /* Slightly rounded corners */
-    padding: 5px; /* Add padding to create space between text and border */
-    display: flex; /* Use flexbox for centering */
-    align-items: center; /* Vertically center text */
-    justify-content: center; /* Horizontally center text */
-    height: 100%; /* Ensure the height matches the box */
+    border: 2px solid #0329ff; 
+    border-radius: 4px; 
+    padding: 5px; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    height: 100%; 
 }
 .dark-mode .calendar .day.current-date {
-    color: #4658f3; /* Lighter blue text color for dark mode */
-    border: 2px solid #4658f3; /* Lighter blue border for dark mode */
+    color: #4658f3; 
+    border: 2px solid #4658f3; 
 }
 .gear {
     position: fixed;
@@ -155,30 +155,29 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    flex-direction: column; /* Stack children vertically */
+    flex-direction: column; 
 }
 
 .help-label {
-    font-size: 1.5em; /* Adjust size to match your design */
-    color: #000; /* Default text color for light theme */
-    margin-bottom: 5px; /* Space between the label and the gear icon */
-    position: relative; /* Ensure positioning for adjustments */
-    top: -30px; /* Move up to avoid overlap */
+    font-size: 1.5em; 
+    color: #000; 
+    margin-bottom: 5px; 
+    position: relative; 
+    top: -30px; 
 }
 
-/* Dark mode styles */
 .dark-mode .help-label {
-    color: #e0e0e0; /* Light text color for dark theme */
+    color: #e0e0e0; 
 }
 
 .gear i {
-    margin: 0; /* Remove any default margin */
+    margin: 0; 
 }
 
 .settings-panel {
     position: fixed;
     top: 0;
-    right: -300px; /* Start off-screen */
+    right: -300px;
     width: 300px;
     height: 100%;
     background-color: #fff;
@@ -195,7 +194,7 @@ body {
     border-color: #444;
 }
 .settings-panel.active {
-    right: 0; /* Slide in */
+    right: 0; 
 }
 .settings-panel .close {
     font-size: 1.5em;
@@ -219,15 +218,15 @@ body {
     height: 10px;
     background-color: #ddd;
     cursor: move;
-    z-index: 1100; /* Ensure it's above the calendar */
+    z-index: 1100; 
 }
 .dark-mode .drag-handle {
     background-color: #555;
 }
 .note-box {
     position: absolute;
-    width: 250px; /* Initial width */
-    height: 200px; /* Initial height */
+    width: 250px; 
+    height: 200px; 
     border: 1px solid #ddd;
     border-radius: 8px;
     padding: 10px;
@@ -273,13 +272,12 @@ body {
     border-color: #555;
     color: #e0e0e0;
 }
-/* Slider container */
+
 .slider {
     display: inline-block;
     position: relative;
 }
 
-/* Slider switch */
 .slider-label {
     position: relative;
     display: inline-block;
@@ -313,7 +311,6 @@ body {
     border-radius: 50%;
 }
 
-/* Checked state */
 .slider:checked + .slider-label::before {
     background-color: #2196F3;
 }
@@ -322,17 +319,16 @@ body {
     transform: translateX(26px);
 }
 .day {
-    cursor: pointer; /* Change cursor to pointer when hovering over dates */
+    cursor: pointer; 
 }
 .day.active-date {
-    border: 2px solid red !important; /* Red border for the active date */
+    border: 2px solid red !important; 
 }
 
-/* Help Menu styles */
 .help-menu {
     position: fixed;
     top: 0;
-    right: -300px; /* Start off-screen */
+    right: -300px;
     width: 300px;
     height: 100%;
     background-color: #fff;
@@ -351,7 +347,7 @@ body {
 }
 
 .help-menu.active {
-    right: 0; /* Slide in */
+    right: 0; 
 }
 
 .help-menu .close-help {
